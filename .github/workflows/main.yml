@@ -51,7 +51,7 @@ jobs:
   unit_test_ios:
     name: Unit Test iOS code
     env:
-      SCHEME: "Actions"
+      SCHEME: "Runner"
       DEVICE: "iPhone 11 Pro Max"
       DERIVED_DATA_PATH: "DerivedData"
     # needs: unit_test_flutter
