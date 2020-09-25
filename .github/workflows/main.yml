@@ -35,9 +35,11 @@ jobs:
         working-directory: ./android
         run: |
           pwd
-          gradlew build
+          ls
+          bash ./gradlew build
       - name: Run Unit tests
         working-directory: ./android
         run: |
           pwd
+          ls
           bash ./gradlew test --stacktrace
