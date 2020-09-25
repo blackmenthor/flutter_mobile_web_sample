@@ -72,5 +72,5 @@ jobs:
     #       set -o pipefail && xcodebuild -scheme $SCHEME -destination "platform=iOS Simulator,name=$DEVICE" -derivedDataPath $DERIVED_DATA_PATH | xcpretty --color --simple
       - name: Run unit tests
         run: |
-          set -o pipefail && xcodebuild test -destination "platform=iOS Simulator,name=$DEVICE" -xctestrun $(find . -type f -name "*.xctestrun") -enableCodeCoverage YES
+          set -o pipefail && xcodebuild test -destination "platform=iOS Simulator,name=$DEVICE" -xctestrun $(find . -type f -name "*.xctestrun")
     
