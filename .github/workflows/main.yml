@@ -31,17 +31,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: ls
-        run: ls
-      - name: pwd
-        run: pwd
-      - name: cd
-        run: cd android/
-      - name: pwd-2
-        run: pwd
-      - name: ls-1
-        run: ls
       - name: Build with Gradle
-        run: android/gradlew build
+        working-directory: ./android
+        run: ./gradlew build
       - name: Run Unit tests
-        run: bash android/gradlew test --stacktrace
+        working-directory: ./android
+        run: bash ./gradlew test --stacktrace
