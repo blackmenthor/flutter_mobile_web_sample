@@ -42,6 +42,6 @@ jobs:
       - name: ls-1
         run: ls
       - name: Build with Gradle
-        run: ./gradlew build
+        run: android/gradlew build
       - name: Run Unit tests
-        run: bash ./gradlew test --stacktrace
+        run: bash android/gradlew test --stacktrace
