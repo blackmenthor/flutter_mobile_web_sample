@@ -5,7 +5,7 @@ on:
       branches: [ develop, master ]
     
 jobs:
-  test_flutter:
+  unit_test_flutter:
     name: Test Flutter code
     runs-on: ubuntu-latest
     steps:
@@ -19,11 +19,13 @@ jobs:
         channel: 'beta'
     - run: flutter pub get
     - run: flutter test
+    # TODO: RUN FLUTTER DRIVER TEST
 
-  test_android:
+  unit_test_android:
     name: Test Android code
-    # needs: test_flutter
+    needs: unit_test_flutter
     runs-on: ubuntu-latest
+    # CHECK IF THERE ARE CHANGES IN ANDROID FOLDER
     steps:
       - uses: actions/checkout@v1
       - name: Set up JDK 1.8
