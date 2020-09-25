@@ -66,11 +66,11 @@ jobs:
           channel: 'beta'
       - run: flutter pub get
       - run: flutter build ios --release --no-codesign
-      - name: Build application
-        working-directory: ./ios
-        run: |
-          set -o pipefail && xcodebuild -scheme $SCHEME -destination "platform=iOS Simulator,name=$DEVICE" -derivedDataPath $DERIVED_DATA_PATH | xcpretty --color --simple
+    #   - name: Build application
+    #     working-directory: ./ios
+    #     run: |
+    #       set -o pipefail && xcodebuild -scheme $SCHEME -destination "platform=iOS Simulator,name=$DEVICE" -derivedDataPath $DERIVED_DATA_PATH | xcpretty --color --simple
       - name: Run unit tests
         run: |
-          set -o pipefail && xcodebuild test -xctestrun $(find . -type f -name "*.xctestrun") -destination "platform=iOS Simulator,name=$DEVICE" -derivedDataPath $DERIVED_DATA_PATH -enableCodeCoverage YES
+          set -o pipefail && xcodebuild test -destination "platform=iOS Simulator,name=$DEVICE" -xctestrun $(find . -type f -name "*.xctestrun") -derivedDataPath $DERIVED_DATA_PATH -enableCodeCoverage YES
     
