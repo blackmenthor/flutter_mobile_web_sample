@@ -36,13 +36,7 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build with Gradle
         working-directory: ./android
-        run: |
-          pwd
-          ls
-          bash ./gradlew build
+        run: bash ./gradlew build
       - name: Run Unit tests
         working-directory: ./android
-        run: |
-          pwd
-          ls
-          bash ./gradlew test --stacktrace
+        run: bash ./gradlew test --stacktrace
