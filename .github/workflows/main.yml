@@ -5,8 +5,8 @@ on:
       branches: [ develop, master ]
     
 jobs:
-  test_flutter:
-    name: Test Flutter code
+  unit_test_flutter:
+    name: Unit Test Flutter code
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -20,9 +20,9 @@ jobs:
     - run: flutter pub get
     - run: flutter test
 
-  test_android:
-    name: Test Android code
-    # needs: test_flutter
+  unit_test_android:
+    name: Unit Test Android code
+    needs: unit_test_flutter
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -45,3 +45,32 @@ jobs:
       - name: Run Unit tests
         working-directory: ./android
         run: bash ./gradlew test --stacktrace
+
+  unit_test_ios:
+    name: Unit Test iOS code
+    env:
+      SCHEME: "Runner"
+      DEVICE: "iPhone 11 Pro Max"
+      DERIVED_DATA_PATH: "DerivedData"
+    needs: unit_test_flutter
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Force XCode 11.3
+        run: sudo xcode-select -switch /Applications/Xcode_11.3.app
+      # Need to run Flutter to build ios folder
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '1.21.0-9.2.pre'
+          channel: 'beta'
+      - run: flutter pub get
+      - run: flutter build ios --release --no-codesign
+      - name: Build application
+        working-directory: ./ios
+        run: |
+          set -o pipefail && xcodebuild -scheme $SCHEME -destination "platform=iOS Simulator,name=$DEVICE" -derivedDataPath $DERIVED_DATA_PATH | xcpretty --color --simple
+      - name: Run unit tests
+        working-directory: ./ios
+        run: |
+          set -o pipefail && xcodebuild test -project Runner.xcodeproj -scheme $SCHEME -destination "platform=iOS Simulator,name=$DEVICE" -derivedDataPath $DERIVED_DATA_PATH -enableCodeCoverage YES
+    
