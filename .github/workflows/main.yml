@@ -15,13 +15,14 @@ jobs:
         java-version: '12.x'
     - uses: subosito/flutter-action@v1
       with:
-        flutter-version: '1.7.8+hotfix.4'
+        flutter-version: '1.21.0-9.2.pre'
+        channel: 'beta'
     - run: flutter pub get
     - run: flutter test
 
   test_android:
     name: Test Android code
-    needs: test_flutter
+    # needs: test_flutter
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -29,9 +30,18 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: move to Android folder
-        run: cd android/
+      # Need to run Flutter pub get to update local.properties
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '1.21.0-9.2.pre'
+          channel: 'beta'
+      - run: flutter pub get
+      - name: Make Gradle executable
+        working-directory: ./android
+        run: chmod +x ./gradlew
       - name: Build with Gradle
-        run: ./gradlew build
+        working-directory: ./android
+        run: bash ./gradlew build
       - name: Run Unit tests
+        working-directory: ./android
         run: bash ./gradlew test --stacktrace
