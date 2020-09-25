@@ -5,45 +5,66 @@ on:
       branches: [ develop, master ]
     
 jobs:
-  unit_test_flutter:
-    name: Test Flutter code
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-java@v1
-      with:
-        java-version: '12.x'
-    - uses: subosito/flutter-action@v1
-      with:
-        flutter-version: '1.21.0-9.2.pre'
-        channel: 'beta'
-    - run: flutter pub get
-    - run: flutter test
-    # TODO: RUN FLUTTER DRIVER TEST
+#   unit_test_flutter:
+#     name: Unit Test Flutter code
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v1
+#     - uses: actions/setup-java@v1
+#       with:
+#         java-version: '12.x'
+#     - uses: subosito/flutter-action@v1
+#       with:
+#         flutter-version: '1.21.0-9.2.pre'
+#         channel: 'beta'
+#     - run: flutter pub get
+#     - run: flutter test
+#     # TODO: RUN FLUTTER DRIVER TEST
 
-  unit_test_android:
-    name: Test Android code
-    needs: unit_test_flutter
-    runs-on: ubuntu-latest
-    # CHECK IF THERE ARE CHANGES IN ANDROID FOLDER
+#   unit_test_android:
+#     name: Unit Test Android code
+#     needs: unit_test_flutter
+#     runs-on: ubuntu-latest
+#     # CHECK IF THERE ARE CHANGES IN ANDROID FOLDER
+#     steps:
+#       - uses: actions/checkout@v1
+#       - name: Set up JDK 1.8
+#         uses: actions/setup-java@v1
+#         with:
+#           java-version: 1.8
+#       # Need to run Flutter pub get to update local.properties
+#       - uses: subosito/flutter-action@v1
+#         with:
+#           flutter-version: '1.21.0-9.2.pre'
+#           channel: 'beta'
+#       - run: flutter pub get
+#       - name: Make Gradle executable
+#         working-directory: ./android
+#         run: chmod +x ./gradlew
+#       - name: Build with Gradle
+#         working-directory: ./android
+#         run: bash ./gradlew build
+#       - name: Run Unit tests
+#         working-directory: ./android
+#         run: bash ./gradlew test --stacktrace
+
+  unit_test_ios:
+    name: Unit Test iOS code
+    env:
+      SCHEME: "Actions"
+      DEVICE: "iPhone 11 Pro Max"
+      DERIVED_DATA_PATH: "DerivedData"
+    # needs: unit_test_flutter
+    runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-      # Need to run Flutter pub get to update local.properties
-      - uses: subosito/flutter-action@v1
-        with:
-          flutter-version: '1.21.0-9.2.pre'
-          channel: 'beta'
-      - run: flutter pub get
-      - name: Make Gradle executable
-        working-directory: ./android
-        run: chmod +x ./gradlew
-      - name: Build with Gradle
-        working-directory: ./android
-        run: bash ./gradlew build
-      - name: Run Unit tests
-        working-directory: ./android
-        run: bash ./gradlew test --stacktrace
+      - name: Force XCode 11.3
+        run: sudo xcode-select -switch /Applications/Xcode_11.3.app
+      - name: Build application
+        working-directory: ./ios
+        run: |
+          set -o pipefail && xcodebuild clean -scheme $SCHEME -destination "platform=iOS Simulator,name=$DEVICE" -derivedDataPath $DERIVED_DATA_PATH build-for-testing | xcpretty --color --simple
+      - name: Run unit tests
+        run: |
+          set -o pipefail && xcodebuild test-without-building -xctestrun $(find . -type f -name "*.xctestrun") -destination "platform=iOS Simulator,name=$DEVICE" -derivedDataPath $DERIVED_DATA_PATH -enableCodeCoverage YES -only-testing:$UNIT_TEST_TARGET | xcpretty --color --simple
+    
