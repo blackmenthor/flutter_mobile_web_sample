@@ -1,5 +1,6 @@
 /.gradle
 /captures/
+/local.properties
 GeneratedPluginRegistrant.java
 
 # Remember to never publicly share your keystore.
