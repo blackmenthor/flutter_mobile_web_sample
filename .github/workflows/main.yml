@@ -73,5 +73,5 @@ jobs:
       - name: Run unit tests
         working-directory: ./ios
         run: |
-          set -o pipefail && xcodebuild test-without-building -scheme $SCHEME -destination "platform=iOS Simulator,name=$DEVICE" -derivedDataPath $DERIVED_DATA_PATH -enableCodeCoverage YES
+          set -o pipefail && xcodebuild test -scheme $SCHEME -destination "platform=iOS Simulator,name=$DEVICE" -derivedDataPath $DERIVED_DATA_PATH -enableCodeCoverage YES
     
