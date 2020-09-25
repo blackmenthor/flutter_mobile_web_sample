@@ -23,6 +23,7 @@ jobs:
 
   test_android:
     name: Test Android code
+    # needs: test_flutter
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -30,9 +31,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: ls
+        run: ls
       - name: pwd
         run: pwd
+      - name: cd
+        run: cd android/
       - name: Build with Gradle
-        run: ./android/gradlew build
+        run: ./gradlew build
       - name: Run Unit tests
-        run: bash ./android/gradlew test --stacktrace
+        run: bash ./gradlew test --stacktrace
